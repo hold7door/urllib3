@@ -14,7 +14,7 @@ from .._base_connection import _TYPE_BODY
 from .._collections import HTTPHeaderDict
 from ..connection import HTTPSConnection, _get_default_user_agent
 from ..exceptions import ConnectionError
-from ..response import BaseHTTPResponse
+from ..response import BaseHTTPResponse, BytesQueueBuffer
 
 orig_HTTPSConnection = HTTPSConnection
 
@@ -344,6 +344,8 @@ class HTTP2Response(BaseHTTPResponse):
         )
         self._data = data
         self.length_remaining = 0
+        
+        self._decoded_buffer = BytesQueueBuffer()
 
     @property
     def data(self) -> bytes:
@@ -353,4 +355,12 @@ class HTTP2Response(BaseHTTPResponse):
         return None
 
     def close(self) -> None:
+        pass
+
+    def read(
+        self,
+        amt: int | None = None,
+        decode_content: bool | None = None,
+        cache_content: bool = False,
+    ) -> bytes:
         pass
